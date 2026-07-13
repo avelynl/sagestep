@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SageStep — Market Survey Results</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Alegreya+Sans:wght@400;500;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --sage:#5B8F6F; --sage-dark:#2D5A47; --cream:#FAF8F5; --charcoal:#1A1F1E; --teal:#3D7B8A; --lavender:#A890C0; --lavender-light:#E2D5EE; }
+    body { font-family:'Alegreya Sans',sans-serif; background:var(--cream); }
+    h1,h2,h3 { font-family:'Cormorant Garamond',serif; }
+    .brand-font { font-family:'Cormorant Garamond',serif; }
+    .gradient-text { color:var(--sage-dark); }
+    .bar-bg { background:#E8E0F0; border-radius:999px; height:28px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:999px; display:flex; align-items:center; justify-content:flex-end; padding-right:10px; color:white; font-size:12px; font-weight:600; }
+    .reveal { opacity:0; transform:translateY(30px); transition:opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+  </style>
+ </head>
+ <body class="w-full min-h-screen text-gray-800">
+  <nav class="w-full bg-white/90 backdrop-blur-md border-b border-gray-100/60 py-4">
+   <div class="max-w-5xl mx-auto px-6 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3">
+     <span class="brand-font text-2xl font-bold" style="color:var(--lavender);">SageStep</span>
+     <img src="sagestep-logo.png" alt="SageStep" class="h-10 w-auto">
+    </a>
+    <a href="index.html" class="text-sm text-gray-600 hover:text-gray-900 transition">Back to Main Site</a>
+   </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-6 py-16">
+   <div class="text-center mb-16 reveal">
+    <span class="text-sm font-medium tracking-widest uppercase" style="color:var(--lavender);">Market Research</span>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold mt-3 gradient-text">Survey Results</h1>
+    <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">301 respondents share their perspectives on senior care, health monitoring, and the future of wearable technology for older adults.</p>
+   </div>
+
+   <!-- Overview Stats -->
+   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16 reveal">
+    <div class="bg-white rounded-2xl p-6 shadow-sm text-center border border-gray-100">
+     <p class="text-4xl font-bold" style="color:var(--sage-dark);">301</p>
+     <p class="text-sm text-gray-600 mt-1">Respondents</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm text-center border border-gray-100">
+     <p class="text-4xl font-bold" style="color:var(--sage-dark);">64%</p>
+     <p class="text-sm text-gray-600 mt-1">Adult Children</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm text-center border border-gray-100">
+     <p class="text-4xl font-bold" style="color:var(--sage-dark);">93%</p>
+     <p class="text-sm text-gray-600 mt-1">Interested or Higher</p>
+    </div>
+    <div class="bg-white rounded-2xl p-6 shadow-sm text-center border border-gray-100">
+     <p class="text-4xl font-bold" style="color:var(--sage-dark);">65%</p>
+     <p class="text-sm text-gray-600 mt-1">Cite Falls as Top Concern</p>
+    </div>
+   </div>
+
+   <!-- Q1: Identity -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Who Responded?</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Adult child of an older adult / 老年人的成年子女</span><span class="font-semibold">64%</span></div><div class="bar-bg"><div class="bar-fill" style="width:64%;background:var(--sage-dark);">193</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Older adult (60+) / 老年人（60岁及以上）</span><span class="font-semibold">17%</span></div><div class="bar-bg"><div class="bar-fill" style="width:17%;background:var(--teal);">50</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Family caregiver / 家庭照护者</span><span class="font-semibold">13%</span></div><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(--lavender);">40</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Other / 其他</span><span class="font-semibold">6%</span></div><div class="bar-bg"><div class="bar-fill" style="width:6%;background:var(--sage);">18</div></div></div>
+    </div>
+   </section>
+
+   <!-- Q2: Live Independently -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Do Seniors Live Independently?</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Yes / 是</span><span class="font-semibold">64%</span></div><div class="bar-bg"><div class="bar-fill" style="width:64%;background:var(--sage-dark);">192</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>No / 否</span><span class="font-semibold">0%</span></div><div class="bar-bg"><div class="bar-fill" style="width:0%;background:var(--teal);">0</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Partially / 部分时间</span><span class="font-semibold">15%</span></div><div class="bar-bg"><div class="bar-fill" style="width:15%;background:var(--lavender);">44</div></div></div>
+    </div>
+   </section>
+
+   <!-- Q3: Health Conditions -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Current Health Conditions (Multi-Select)</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>None of the above / 以上皆无</span><span class="font-semibold">40%</span></div><div class="bar-bg"><div class="bar-fill" style="width:40%;background:var(--sage-dark);">119</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Chronic illness requiring regular monitoring / 需要持续监测的慢性疾病</span><span class="font-semibold">29%</span></div><div class="bar-bg"><div class="bar-fill" style="width:29%;background:var(--sage);">86</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Heart or cardiovascular conditions / 心脏或心血管疾病</span><span class="font-semibold">24%</span></div><div class="bar-bg"><div class="bar-fill" style="width:24%;background:var(--teal);">72</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Limited mobility or walking difficulties / 行动不便或步行困难</span><span class="font-semibold">22%</span></div><div class="bar-bg"><div class="bar-fill" style="width:22%;background:var(--lavender);">66</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Dementia or memory decline / 失智症或记忆力衰退</span><span class="font-semibold">15%</span></div><div class="bar-bg"><div class="bar-fill" style="width:15%;background:var(#B8A3CC);">44</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Frequent falls or fall risk / 经常跌倒或存在跌倒风险</span><span class="font-semibold">12%</span></div><div class="bar-bg"><div class="bar-fill" style="width:12%;background:var(#C4B5D4);">36</div></div></div>
+
+    </div>
+   </section>
+
+   <!-- Q4: Biggest Concerns -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Biggest Concerns About Independent Aging (Multi-Select)</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Falls / 跌倒</span><span class="font-semibold">65%</span></div><div class="bar-bg"><div class="bar-fill" style="width:65%;background:var(--sage-dark);">196</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Delayed emergency response / 无法及时获得帮助</span><span class="font-semibold">56%</span></div><div class="bar-bg"><div class="bar-fill" style="width:56%;background:var(--sage);">168</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Nighttime incidents when family members are asleep / 夜间突发情况无法被及时发现</span><span class="font-semibold">56%</span></div><div class="bar-bg"><div class="bar-fill" style="width:56%;background:var(--teal);">168</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Declining mobility or physical function / 行动能力或身体机能下降</span><span class="font-semibold">33%</span></div><div class="bar-bg"><div class="bar-fill" style="width:33%;background:var(--lavender);">100</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Family members being unable to monitor them regularly / 家人无法持续关注其状况</span><span class="font-semibold">26%</span></div><div class="bar-bg"><div class="bar-fill" style="width:26%;background:var(#B8A3CC);">77</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Forgetting medications and other daily needs / 忘记服药和日常需求</span><span class="font-semibold">19%</span></div><div class="bar-bg"><div class="bar-fill" style="width:19%;background:var(#C4B5D4);">56</div></div></div>
+
+    </div>
+   </section>
+
+   <!-- Q5: Worry Frequency -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">How Often Do You Worry About Falls or Health Emergencies?</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Sometimes / 有时</span><span class="font-semibold">42%</span></div><div class="bar-bg"><div class="bar-fill" style="width:42%;background:var(--sage-dark);">126</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Often / 经常</span><span class="font-semibold">35%</span></div><div class="bar-bg"><div class="bar-fill" style="width:35%;background:var(--sage);">104</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Rarely / 很少</span><span class="font-semibold">13%</span></div><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(--teal);">39</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Very often / 非常频繁</span><span class="font-semibold">7%</span></div><div class="bar-bg"><div class="bar-fill" style="width:7%;background:var(--lavender);">21</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Never / 从不</span><span class="font-semibold">4%</span></div><div class="bar-bg"><div class="bar-fill" style="width:4%;background:var(#C4B5D4);">11</div></div></div>
+    </div>
+   </section>
+
+   <!-- Q6: Most Valuable Features -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Most Valuable Features (Multi-Select)</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Real-time alerts to family members / 向家人发送实时提醒</span><span class="font-semibold">69%</span></div><div class="bar-bg"><div class="bar-fill" style="width:69%;background:var(--sage-dark);">207</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Emergency notifications / 紧急情况通知</span><span class="font-semibold">58%</span></div><div class="bar-bg"><div class="bar-fill" style="width:58%;background:var(--sage);">175</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Continuous health monitoring / 持续健康监测</span><span class="font-semibold">58%</span></div><div class="bar-bg"><div class="bar-fill" style="width:58%;background:var(--teal);">174</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Fall-risk detection / 跌倒风险监测</span><span class="font-semibold">56%</span></div><div class="bar-bg"><div class="bar-fill" style="width:56%;background:var(--lavender);">168</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Daily health reports / 每日健康报告</span><span class="font-semibold">34%</span></div><div class="bar-bg"><div class="bar-fill" style="width:34%;background:var(#B8A3CC);">102</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Long-term health trend tracking / 长期健康趋势追踪</span><span class="font-semibold">29%</span></div><div class="bar-bg"><div class="bar-fill" style="width:29%;background:var(#C4B5D4);">88</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>AI voice reminders for medications and daily activities / AI 服药与日常活动语音提醒</span><span class="font-semibold">22%</span></div><div class="bar-bg"><div class="bar-fill" style="width:22%;background:var(#D5C8E0);">66</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Mobility and walking analysis / 行动与步态分析</span><span class="font-semibold">19%</span></div><div class="bar-bg"><div class="bar-fill" style="width:19%;background:var(#E2D5EE);">57</div></div></div>
+
+    </div>
+   </section>
+
+   <!-- Q7: Prefer Sock vs Smartwatch -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Smart Sock vs. Smartwatch Preference</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>No preference / 无偏好</span><span class="font-semibold">43%</span></div><div class="bar-bg"><div class="bar-fill" style="width:43%;background:var(--sage-dark);">129</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Prefer smart sock / 更喜欢智能袜</span><span class="font-semibold">30%</span></div><div class="bar-bg"><div class="bar-fill" style="width:30%;background:var(--lavender);">90</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Prefer smartwatch / 更喜欢智能手表</span><span class="font-semibold">27%</span></div><div class="bar-bg"><div class="bar-fill" style="width:27%;background:var(--teal);">80</div></div></div>
+    </div>
+   </section>
+
+   <!-- Q8: Interest Level -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Interest in AI Voice Reminder Smart Sock</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Moderately interested / 比较感兴趣</span><span class="font-semibold">37%</span></div><div class="bar-bg"><div class="bar-fill" style="width:37%;background:var(--sage-dark);">112</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Slightly interested / 略感兴趣</span><span class="font-semibold">23%</span></div><div class="bar-bg"><div class="bar-fill" style="width:23%;background:var(--sage);">70</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Very interested / 非常感兴趣</span><span class="font-semibold">22%</span></div><div class="bar-bg"><div class="bar-fill" style="width:22%;background:var(--teal);">65</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Extremely interested / 极其感兴趣</span><span class="font-semibold">11%</span></div><div class="bar-bg"><div class="bar-fill" style="width:11%;background:var(--lavender);">32</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>Not interested / 不感兴趣</span><span class="font-semibold">7%</span></div><div class="bar-bg"><div class="bar-fill" style="width:7%;background:var(#C4B5D4);">22</div></div></div>
+    </div>
+   </section>
+
+   <!-- Q9: Concerns -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Top Concerns About Using SageStep (Multi-Select)</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Accuracy of health monitoring / 健康监测的准确性</span><span class="font-semibold">59%</span></div><div class="bar-bg"><div class="bar-fill" style="width:59%;background:var(--sage-dark);">177</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Comfort during daily wear / 日常穿着舒适度</span><span class="font-semibold">37%</span></div><div class="bar-bg"><div class="bar-fill" style="width:37%;background:var(--sage);">110</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Cost of the product / 产品价格</span><span class="font-semibold">25%</span></div><div class="bar-bg"><div class="bar-fill" style="width:25%;background:var(--teal);">75</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Privacy and data security / 隐私与数据安全</span><span class="font-semibold">21%</span></div><div class="bar-bg"><div class="bar-fill" style="width:21%;background:var(--lavender);">62</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>False alarms or excessive notifications / 误报或提醒过多</span><span class="font-semibold">14%</span></div><div class="bar-bg"><div class="bar-fill" style="width:14%;background:var(#B8A3CC);">41</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Difficulty using the app or sock/ App 或袜子使用复杂</span><span class="font-semibold">13%</span></div><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(#C4B5D4);">40</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Frequent charging required / 需要频繁充电</span><span class="font-semibold">13%</span></div><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(#D5C8E0);">39</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Easy to forget or refuse to wear it / 可能忘记佩戴或不愿佩戴</span><span class="font-semibold">9%</span></div><div class="bar-bg"><div class="bar-fill" style="width:9%;background:var(#E2D5EE);">26</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>Dependence on technology / 过度依赖技术</span><span class="font-semibold">3%</span></div><div class="bar-bg"><div class="bar-fill" style="width:3%;background:var(#A890C0);">9</div></div></div>
+<div><div class="flex justify-between text-sm mb-1"><span>清洗</span><span class="font-semibold">1%</span></div><div class="bar-bg"><div class="bar-fill" style="width:1%;background:var(#8B9D83);">2</div></div></div>
+
+    </div>
+   </section>
+
+   <!-- Q10: Price -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Reasonable Price for Starter Kit</h2>
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 space-y-4">
+     <div><div class="flex justify-between text-sm mb-1"><span>Less than $50 / 340 RMB以下</span><span class="font-semibold">50%</span></div><div class="bar-bg"><div class="bar-fill" style="width:50%;background:var(--sage-dark);">150</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>$50–99 / 340-670 RMB</span><span class="font-semibold">27%</span></div><div class="bar-bg"><div class="bar-fill" style="width:27%;background:var(--sage);">81</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>$100–149 / 670-1000 RMB</span><span class="font-semibold">16%</span></div><div class="bar-bg"><div class="bar-fill" style="width:16%;background:var(--teal);">48</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>$150–199 / 1000-1350 RMB</span><span class="font-semibold">6%</span></div><div class="bar-bg"><div class="bar-fill" style="width:6%;background:var(--lavender);">18</div></div></div>
+     <div><div class="flex justify-between text-sm mb-1"><span>More than $200 / 1350 RMB以上</span><span class="font-semibold">1%</span></div><div class="bar-bg"><div class="bar-fill" style="width:1%;background:var(#C4B5D4);">4</div></div></div>
+    </div>
+   </section>
+
+   <!-- Key Insights -->
+   <section class="mb-14 reveal">
+    <h2 class="text-2xl font-semibold mb-6" style="color:var(--charcoal);">Key Insights</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:var(--sage-dark);">
+       <i data-lucide="trending-up" style="width:20px;height:20px;"></i>
+      </div>
+      <h3 class="font-semibold text-lg mb-2" style="color:var(--charcoal);">Strong Demand</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">93% of respondents expressed interest in a smart sock with AI voice reminders, with 32% being "very" or "extremely" interested.</p>
+     </div>
+     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:var(--teal);">
+       <i data-lucide="bell" style="width:20px;height:20px;"></i>
+      </div>
+      <h3 class="font-semibold text-lg mb-2" style="color:var(--charcoal);">Family Alerts #1</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">Real-time alerts to family members (69%) ranked as the most valued feature, followed by emergency notifications (58%) and continuous health monitoring (58%).</p>
+     </div>
+     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:var(--lavender);">
+       <i data-lucide="target" style="width:20px;height:20px;"></i>
+      </div>
+      <h3 class="font-semibold text-lg mb-2" style="color:var(--charcoal);">Accuracy Matters</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">Health monitoring accuracy (59%) is the top concern, followed by comfort (37%) and cost (25%) — signaling that reliability must come before pricing.</p>
+     </div>
+     <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white mb-3" style="background:var(--sage);">
+       <i data-lucide="wallet" style="width:20px;height:20px;"></i>
+      </div>
+      <h3 class="font-semibold text-lg mb-2" style="color:var(--charcoal);">Price Sensitivity</h3>
+      <p class="text-gray-600 text-sm leading-relaxed">77% of respondents expect a starter kit under $99 (670 RMB), with nearly half (50%) preferring under $50 (340 RMB).</p>
+     </div>
+    </div>
+   </section>
+
+   <!-- QR Code -->
+   <section class="mb-14 reveal">
+    <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center max-w-md mx-auto">
+     <h3 class="font-semibold text-xl mb-3" style="color:var(--charcoal);">Share These Results</h3>
+     <p class="text-gray-600 text-sm mb-6">Scan the QR code to open this survey results page on your phone.</p>
+     <img src="survey-qr.png" alt="QR code to survey results" class="w-48 h-48 mx-auto rounded-xl border border-gray-100">
+     <p class="text-xs text-gray-400 mt-4">avelynl.github.io/sagestep/survey.html</p>
+    </div>
+   </section>
+
+   <div class="text-center mt-16 reveal">
+    <a href="index.html" class="inline-block px-8 py-3 rounded-full font-medium text-black transition hover:scale-105 btn-gradient shadow-lg">Back to SageStep</a>
+   </div>
+  </main>
+
+  <footer class="w-full py-12 border-t border-gray-100 bg-white mt-12">
+   <div class="max-w-5xl mx-auto px-6 text-center">
+    <p class="text-sm text-gray-500">SageStep Market Research Survey — 301 Respondents — June 2026</p>
+   </div>
+  </footer>
+
+  <script>
+   const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+   }, { threshold: 0.1 });
+   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+   lucide.createIcons();
+  </script>
+ </body>
+</html>
