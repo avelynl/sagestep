@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SageStep App — Care Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --lavender:#A890C0; --lavender-light:#E2D5EE; --lavender-dark:#7A6A90; --sage:#5B8F6F; --sage-dark:#2D5A47; --teal:#3D7B8A; --cream:#FAF8F5; --charcoal:#1A1F1E; }
+    * { font-family:'Inter',sans-serif; }
+    .serif { font-family:'Cormorant Garamond',serif; }
+    .phone-frame { width:375px; height:812px; border-radius:48px; border:12px solid #1a1a1a; overflow:hidden; position:relative; background:var(--cream); box-shadow:0 25px 80px rgba(0,0,0,0.25); }
+    .screen { position:absolute; inset:0; overflow-y:auto; scrollbar-width:none; transition:opacity 0.35s ease, transform 0.35s ease; }
+    .screen::-webkit-scrollbar { display:none; }
+    .screen.hidden { opacity:0; pointer-events:none; transform:scale(0.96); }
+    .screen.active { opacity:1; pointer-events:auto; transform:scale(1); }
+    .nav-item { transition:all 0.25s ease; }
+    .nav-item.active { color:var(--lavender); }
+    .glass-card { background:rgba(255,255,255,0.75); backdrop-filter:blur(16px); border:1px solid rgba(255,255,255,0.6); }
+    .soft-shadow { box-shadow:0 2px 16px rgba(168,144,192,0.08), 0 1px 4px rgba(0,0,0,0.04); }
+    .alert-green { background:linear-gradient(135deg,#f1f8f4,#e0f0e5); border:1px solid #c8e6d0; }
+    .alert-yellow { background:linear-gradient(135deg,#fdf9f0,#f9f0d9); border:1px solid #f0e0b0; }
+    .alert-red { background:linear-gradient(135deg,#fdf2f2,#f9dcdc); border:1px solid #f0b8b8; }
+    .pulse-dot { animation:pulse 2.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:0.4;transform:scale(1.4);} }
+    .slide-up { animation:slideUp 0.5s ease forwards; }
+    @keyframes slideUp { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+    .stagger-1 { animation-delay:0.05s; opacity:0; }
+    .stagger-2 { animation-delay:0.1s; opacity:0; }
+    .stagger-3 { animation-delay:0.15s; opacity:0; }
+    .stagger-4 { animation-delay:0.2s; opacity:0; }
+    .timeline-line { position:absolute; left:15px; top:28px; bottom:-8px; width:1px; background:var(--lavender-light); }
+    .toggle { width:44px; height:24px; border-radius:12px; position:relative; cursor:pointer; transition:background 0.3s; }
+    .toggle-knob { width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:2px; left:2px; transition:transform 0.3s; box-shadow:0 1px 3px rgba(0,0,0,0.15); }
+    .toggle.on { background:var(--lavender); }
+    .toggle.on .toggle-knob { transform:translateX(20px); }
+    .battery-fill { transition:width 0.8s ease; }
+    .spark-bar { transition:height 0.6s ease; }
+  </style>
+</head>
+<body class="bg-gray-200 min-h-screen flex items-center justify-center p-6">
+
+  <div class="flex flex-col items-center gap-5">
+    <div class="text-center">
+      <h1 class="serif text-3xl font-semibold" style="color:var(--charcoal);">SageStep</h1>
+      <p class="text-sm text-gray-500 mt-1 tracking-wide">Care Command Center</p>
+    </div>
+
+    <div class="phone-frame">
+      <!-- Dynamic Island / Notch area -->
+      <div class="absolute top-3 left-1/2 -translate-x-1/2 w-28 h-7 bg-black rounded-full z-50"></div>
+
+      <!-- Status Bar -->
+      <div class="absolute top-0 left-0 right-0 h-12 flex items-end justify-between px-7 pb-1 z-40" style="background:linear-gradient(to bottom,rgba(250,248,245,0.9),transparent);">
+        <span class="text-xs font-semibold text-gray-700" id="clock">9:41</span>
+        <div class="flex items-center gap-1">
+          <svg class="w-3.5 h-3.5 text-gray-700" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+          <svg class="w-3.5 h-3.5 text-gray-700" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/></svg>
+        </div>
+      </div>
+
+      <!-- ==================== HOME ==================== -->
+      <div id="screen-home" class="screen active pt-14 pb-20 px-5">
+        <div class="slide-up">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-5">
+            <div>
+              <p class="text-[11px] text-gray-400 uppercase tracking-widest">Good Morning</p>
+              <h2 class="serif text-[26px] font-semibold text-gray-800 leading-tight">Grandpa Chen</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <!-- Battery indicator -->
+              <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full" style="background:var(--lavender-light);">
+                <svg class="w-3.5 h-3.5" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                <div class="w-8 h-2 bg-white rounded-full overflow-hidden">
+                  <div class="battery-fill h-full rounded-full" id="sock-battery" style="width:72%;background:var(--lavender);"></div>
+                </div>
+                <span class="text-[10px] font-medium" style="color:var(--lavender-dark);" id="battery-text">72%</span>
+              </div>
+              <div class="w-10 h-10 rounded-full overflow-hidden border-2" style="border-color:var(--lavender);">
+                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" class="w-full h-full object-cover" alt="Profile">
+              </div>
+            </div>
+          </div>
+
+          <!-- Wear Detection + Status -->
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                <svg class="w-4.5 h-4.5" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <div>
+                <p class="text-sm font-medium text-gray-800">Sock Worn & Active</p>
+                <p class="text-[11px] text-gray-400">Monitoring since 7:15 AM</p>
+              </div>
+            </div>
+            <div class="w-2.5 h-2.5 rounded-full bg-green-400 pulse-dot"></div>
+          </div>
+
+          <!-- Live Vitals Card -->
+          <div class="rounded-2xl p-5 text-white mb-4 relative overflow-hidden" style="background:linear-gradient(145deg,var(--lavender),#B8A0D0);">
+            <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-10" style="background:white;"></div>
+            <div class="absolute -bottom-8 -left-8 w-28 h-28 rounded-full opacity-10" style="background:white;"></div>
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-2 h-2 rounded-full bg-white/70 pulse-dot"></div>
+              <span class="text-[11px] font-medium text-white/80 uppercase tracking-wider">Live Monitoring</span>
+            </div>
+            <div class="flex items-baseline gap-1.5 mb-0.5">
+              <span class="serif text-[42px] font-bold leading-none" id="live-steps">2,847</span>
+              <span class="text-sm text-white/70">steps</span>
+            </div>
+            <p class="text-[11px] text-white/60 mb-5">68% of daily goal · 4,000 target</p>
+            <div class="flex gap-6">
+              <div>
+                <div class="flex items-center gap-1 mb-0.5">
+                  <svg class="w-3.5 h-3.5 text-white/60" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+                  <span class="text-xl font-semibold fluctuate" id="live-hr">72</span>
+                </div>
+                <p class="text-[10px] text-white/50">BPM</p>
+              </div>
+              <div>
+                <div class="flex items-center gap-1 mb-0.5">
+                  <svg class="w-3.5 h-3.5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                  <span class="text-xl font-semibold fluctuate" id="live-temp">36.4</span>
+                </div>
+                <p class="text-[10px] text-white/50">°C Skin</p>
+              </div>
+              <div>
+                <div class="flex items-center gap-1 mb-0.5">
+                  <svg class="w-3.5 h-3.5 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span class="text-xl font-semibold fluctuate" id="live-stress">Low</span>
+                </div>
+                <p class="text-[10px] text-white/50">Stress</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sleep Timeline -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Sleep Quality</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-[11px] text-gray-400">Last 7 Nights</span>
+              <span class="serif text-lg font-semibold" style="color:var(--sage-dark);">87%</span>
+            </div>
+            <div class="h-14 flex items-end gap-[6px] mb-2">
+              <div class="flex-1 rounded-t spark-bar" style="height:60%;background:var(--lavender);opacity:0.25;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:82%;background:var(--lavender);opacity:0.45;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:48%;background:var(--lavender);opacity:0.35;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:91%;background:var(--lavender);opacity:0.65;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:72%;background:var(--lavender);opacity:0.5;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:85%;background:var(--lavender);opacity:0.75;"></div>
+              <div class="flex-1 rounded-t spark-bar" style="height:68%;background:var(--lavender);opacity:0.4;"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-gray-300">
+              <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+            </div>
+          </div>
+
+          <!-- Mobility + Gait -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Mobility & Gait</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <p class="text-sm font-medium text-gray-700">Stability Score</p>
+                <p class="text-[11px] text-gray-400">+4% vs last week</p>
+              </div>
+              <div class="relative w-14 h-14">
+                <svg class="w-14 h-14 -rotate-90">
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="#E2D5EE" stroke-width="4"/>
+                  <circle cx="28" cy="28" r="24" fill="none" stroke="var(--sage)" stroke-width="4" stroke-dasharray="151 151" stroke-dashoffset="30" stroke-linecap="round"/>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">82</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="rounded-xl p-3" style="background:var(--cream);">
+                <p class="text-[10px] text-gray-400">Avg Stride</p>
+                <p class="text-base font-semibold text-gray-700">0.62 m</p>
+              </div>
+              <div class="rounded-xl p-3" style="background:var(--cream);">
+                <p class="text-[10px] text-gray-400">Walking Speed</p>
+                <p class="text-base font-semibold text-gray-700">0.9 m/s</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Events -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Today's Timeline</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-5 mb-4 relative">
+            <div class="space-y-4">
+              <div class="flex gap-3 relative pl-5">
+                <div class="timeline-line"></div>
+                <div class="absolute left-[11px] top-[7px] w-2 h-2 rounded-full" style="background:var(--sage);"></div>
+                <div>
+                  <p class="text-[11px] text-gray-400">7:30 AM</p>
+                  <p class="text-sm text-gray-700 font-medium">Morning walk completed</p>
+                  <p class="text-[11px] text-gray-400">12 min · 847 steps</p>
+                </div>
+              </div>
+              <div class="flex gap-3 relative pl-5">
+                <div class="timeline-line"></div>
+                <div class="absolute left-[11px] top-[7px] w-2 h-2 rounded-full" style="background:var(--teal);"></div>
+                <div>
+                  <p class="text-[11px] text-gray-400">9:15 AM</p>
+                  <p class="text-sm text-gray-700 font-medium">Medication acknowledged</p>
+                  <p class="text-[11px] text-gray-400">Via AI Voice Companion</p>
+                </div>
+              </div>
+              <div class="flex gap-3 relative pl-5">
+                <div class="absolute left-[11px] top-[7px] w-2 h-2 rounded-full" style="background:var(--lavender);"></div>
+                <div>
+                  <p class="text-[11px] text-gray-400">11:00 AM</p>
+                  <p class="text-sm text-gray-700 font-medium">Hydration reminder sent</p>
+                  <p class="text-[11px] text-gray-400">2h since last drink</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ALERTS ==================== -->
+      <div id="screen-alerts" class="screen hidden pt-14 pb-20 px-5">
+        <div class="slide-up">
+          <h2 class="serif text-[26px] font-semibold text-gray-800 mb-0.5">Smart Alert Triage</h2>
+          <p class="text-[11px] text-gray-400 mb-5">Color-coded urgency for rapid response</p>
+
+          <!-- Triage Summary -->
+          <div class="grid grid-cols-3 gap-2.5 mb-5">
+            <div class="rounded-xl p-3 text-center" style="background:linear-gradient(135deg,#f1f8f4,#e0f0e5);border:1px solid #c8e6d0;">
+              <p class="serif text-2xl font-bold text-green-700">12</p>
+              <p class="text-[10px] text-green-600 font-medium mt-0.5">Green</p>
+            </div>
+            <div class="rounded-xl p-3 text-center" style="background:linear-gradient(135deg,#fdf9f0,#f9f0d9);border:1px solid #f0e0b0;">
+              <p class="serif text-2xl font-bold text-amber-700">2</p>
+              <p class="text-[10px] text-amber-600 font-medium mt-0.5">Yellow</p>
+            </div>
+            <div class="rounded-xl p-3 text-center" style="background:linear-gradient(135deg,#fdf2f2,#f9dcdc);border:1px solid #f0b8b8;">
+              <p class="serif text-2xl font-bold text-red-700">0</p>
+              <p class="text-[10px] text-red-600 font-medium mt-0.5">Red</p>
+            </div>
+          </div>
+
+          <!-- Recommended Actions -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Recommended Actions</h3>
+
+          <div class="alert-green rounded-2xl p-4 mb-3 soft-shadow">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-green-800">Normal Routine</p>
+                <p class="text-[11px] text-green-700/70 mt-1">Activity pattern within baseline. No action needed.</p>
+                <p class="text-[10px] text-green-600/50 mt-2">2 min ago · Auto-resolved</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert-yellow rounded-2xl p-4 mb-3 soft-shadow">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-amber-800">Unusual Inactivity</p>
+                <p class="text-[11px] text-amber-700/70 mt-1">3.5 hours without movement. AI check-in sent.</p>
+                <p class="text-[10px] text-amber-600/50 mt-2">45 min ago · Awaiting response</p>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-3">
+              <button class="flex-1 bg-amber-500/90 text-white text-[11px] py-2 rounded-lg font-medium">Call Now</button>
+              <button class="flex-1 bg-white text-amber-700 text-[11px] py-2 rounded-lg font-medium border border-amber-200">Mark Resolved</button>
+            </div>
+          </div>
+
+          <div class="alert-yellow rounded-2xl p-4 mb-3 soft-shadow">
+            <div class="flex items-start gap-3">
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-amber-800">Nighttime Movement</p>
+                <p class="text-[11px] text-amber-700/70 mt-1">4 bathroom trips (baseline: 1–2). Monitor for UTI.</p>
+                <p class="text-[10px] text-amber-600/50 mt-2">This morning · Review recommended</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alert History -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3 mt-6">Resolution Log</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                <span class="text-sm text-gray-600">Medication taken on time</span>
+              </div>
+              <span class="text-[10px] text-gray-300">Yesterday</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
+                <span class="text-sm text-gray-600">Gait speed decreased 8%</span>
+              </div>
+              <span class="text-[10px] text-gray-300">2 days ago</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+                <span class="text-sm text-gray-600">Daily walk goal achieved</span>
+              </div>
+              <span class="text-[10px] text-gray-300">3 days ago</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== VOICE ==================== -->
+      <div id="screen-voice" class="screen hidden pt-14 pb-20 px-5">
+        <div class="slide-up">
+          <h2 class="serif text-[26px] font-semibold text-gray-800 mb-0.5">AI Voice Companion</h2>
+          <p class="text-[11px] text-gray-400 mb-5">Gentle reminders for hydration, medication, walks, rest</p>
+
+          <!-- Companion Status -->
+          <div class="rounded-2xl p-5 text-white mb-5 relative overflow-hidden" style="background:linear-gradient(145deg,var(--lavender),#B8A0D0);">
+            <div class="absolute -top-10 -right-10 w-36 h-36 rounded-full opacity-10" style="background:white;"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-11 h-11 rounded-full bg-white/15 flex items-center justify-center backdrop-blur">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+              </div>
+              <div>
+                <p class="font-medium text-[15px]">Companion Active</p>
+                <p class="text-[11px] text-white/60">5 reminders scheduled today</p>
+              </div>
+            </div>
+            <div class="flex gap-2 flex-wrap">
+              <span class="px-2.5 py-1 rounded-full bg-white/12 text-[10px] backdrop-blur">Hydration</span>
+              <span class="px-2.5 py-1 rounded-full bg-white/12 text-[10px] backdrop-blur">Medication</span>
+              <span class="px-2.5 py-1 rounded-full bg-white/12 text-[10px] backdrop-blur">Walks</span>
+              <span class="px-2.5 py-1 rounded-full bg-white/12 text-[10px] backdrop-blur">Rest</span>
+              <span class="px-2.5 py-1 rounded-full bg-white/12 text-[10px] backdrop-blur">Check-ins</span>
+            </div>
+          </div>
+
+          <!-- Reminder Schedule -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Reminder Schedule</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 space-y-4 mb-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                  <svg class="w-4 h-4" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Morning Medication</p>
+                  <p class="text-[11px] text-gray-400">8:00 AM · Daily</p>
+                </div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                  <svg class="w-4 h-4" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Hydration Check</p>
+                  <p class="text-[11px] text-gray-400">Every 2 hours · 10 AM–6 PM</p>
+                </div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                  <svg class="w-4 h-4" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Afternoon Walk</p>
+                  <p class="text-[11px] text-gray-400">3:00 PM · Mon/Wed/Fri</p>
+                </div>
+              </div>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                  <svg class="w-4 h-4" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Bedtime Reminder</p>
+                  <p class="text-[11px] text-gray-400">9:30 PM · Daily</p>
+                </div>
+              </div>
+              <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+
+          <!-- Recent Interactions -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Recent Interactions</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 space-y-3">
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style="background:var(--lavender);">AI</div>
+              <div>
+                <p class="text-sm text-gray-700">"Good morning! Time for your blood pressure medication."</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">8:00 AM · Acknowledged</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style="background:var(--lavender);">AI</div>
+              <div>
+                <p class="text-sm text-gray-700">"You've been sitting for 2 hours. How about a short walk?"</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">10:30 AM · Snoozed</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style="background:var(--lavender);">AI</div>
+              <div>
+                <p class="text-sm text-gray-700">"Don't forget to drink water. Hydration helps circulation."</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">12:30 PM · Completed</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== CARE ==================== -->
+      <div id="screen-care" class="screen hidden pt-14 pb-20 px-5">
+        <div class="slide-up">
+          <h2 class="serif text-[26px] font-semibold text-gray-800 mb-0.5">Circle of Care</h2>
+          <p class="text-[11px] text-gray-400 mb-5">Family, nurses, and doctors — one connected workflow</p>
+
+          <!-- Care Team -->
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="serif text-base font-semibold text-gray-700">Care Team</h3>
+              <button class="text-[11px] px-3 py-1 rounded-full border font-medium" style="color:var(--lavender);border-color:var(--lavender-light);">+ Invite</button>
+            </div>
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt="Daughter">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-800 truncate">Li Wei</p>
+                  <p class="text-[11px] text-gray-400">Daughter · Primary Contact</p>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium shrink-0">Online</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt="Son">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-800 truncate">Li Hua</p>
+                  <p class="text-[11px] text-gray-400">Son · Full Access</p>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-400 font-medium shrink-0">Away</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm" style="background:var(--teal);">Dr</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-800 truncate">Dr. Zhang Min</p>
+                  <p class="text-[11px] text-gray-400">Geriatrician · Read Only</p>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-600 font-medium shrink-0">Online</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt="Nurse">
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-800 truncate">Nurse Wang</p>
+                  <p class="text-[11px] text-gray-400">Home Care · Alert Only</p>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-400 font-medium shrink-0">Offline</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shared Dashboard -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Shared Weekly Summary</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-4">
+            <div class="grid grid-cols-2 gap-2.5">
+              <div class="rounded-xl p-3 text-center" style="background:var(--cream);">
+                <p class="serif text-xl font-bold" style="color:var(--sage-dark);">92%</p>
+                <p class="text-[10px] text-gray-400">Medication Adherence</p>
+              </div>
+              <div class="rounded-xl p-3 text-center" style="background:var(--cream);">
+                <p class="serif text-xl font-bold" style="color:var(--teal);">6.2h</p>
+                <p class="text-[10px] text-gray-400">Avg Daily Activity</p>
+              </div>
+              <div class="rounded-xl p-3 text-center" style="background:var(--cream);">
+                <p class="serif text-xl font-bold" style="color:var(--lavender);">7.1h</p>
+                <p class="text-[10px] text-gray-400">Avg Sleep</p>
+              </div>
+              <div class="rounded-xl p-3 text-center" style="background:var(--cream);">
+                <p class="serif text-xl font-bold text-amber-600">2</p>
+                <p class="text-[10px] text-gray-400">Alerts This Week</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Two-Way Action Log -->
+          <h3 class="serif text-lg font-semibold text-gray-700 mb-3">Two-Way Action Log</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 space-y-3">
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 text-[10px] font-bold shrink-0">LW</div>
+              <div>
+                <p class="text-sm text-gray-700">Li Wei called Grandpa Chen</p>
+                <p class="text-[11px] text-gray-400">Yellow alert response · 45 min ago</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style="background:var(--lavender);">AI</div>
+              <div>
+                <p class="text-sm text-gray-700">AI check-in completed — no response needed</p>
+                <p class="text-[11px] text-gray-400">Auto-resolved · 2 hours ago</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 text-[10px] font-bold shrink-0">Dr</div>
+              <div>
+                <p class="text-sm text-gray-700">Dr. Zhang reviewed weekly report</p>
+                <p class="text-[11px] text-gray-400">Read only access · Yesterday</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 text-[10px] font-bold shrink-0">NW</div>
+              <div>
+                <p class="text-sm text-gray-700">Nurse Wang visited for wellness check</p>
+                <p class="text-[11px] text-gray-400">Home care visit · 2 days ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== SETTINGS ==================== -->
+      <div id="screen-settings" class="screen hidden pt-14 pb-20 px-5">
+        <div class="slide-up">
+          <h2 class="serif text-[26px] font-semibold text-gray-800 mb-5">Settings</h2>
+
+          <!-- Device -->
+          <h3 class="text-[11px] text-gray-400 uppercase tracking-widest mb-3">Device</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:var(--lavender-light);">
+                  <svg class="w-5 h-5" style="color:var(--lavender);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-800">SageStep Sock</p>
+                  <p class="text-[11px] text-gray-400">Connected · SN: SS-2026-001</p>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-green-50 text-green-600">Active</span>
+            </div>
+            <div class="flex items-center justify-between py-3 border-t border-gray-100">
+              <span class="text-sm text-gray-600">Battery Level</span>
+              <div class="flex items-center gap-2">
+                <div class="w-12 h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full rounded-full" style="width:72%;background:var(--lavender);"></div>
+                </div>
+                <span class="text-xs text-gray-500">72%</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between py-3 border-t border-gray-100">
+              <span class="text-sm text-gray-600">Last Charged</span>
+              <span class="text-xs text-gray-500">Today, 6:45 AM</span>
+            </div>
+            <div class="flex items-center justify-between py-3 border-t border-gray-100">
+              <span class="text-sm text-gray-600">Firmware</span>
+              <span class="text-xs text-gray-500">v2.1.4</span>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <h3 class="text-[11px] text-gray-400 uppercase tracking-widest mb-3">Notifications</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Push Alerts</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Email Reports</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">SMS for Red Alerts</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Weekly Summary</span>
+              <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+
+          <!-- Privacy -->
+          <h3 class="text-[11px] text-gray-400 uppercase tracking-widest mb-3">Privacy & Data</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Data Sharing with Care Team</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Anonymized Trend Contribution</span>
+              <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-700">Location Tracking</span>
+              <div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <h3 class="text-[11px] text-gray-400 uppercase tracking-widest mb-3">Account</h3>
+          <div class="glass-card soft-shadow rounded-2xl p-4 mb-5 space-y-3">
+            <button class="w-full text-left py-2 text-sm text-gray-700 hover:text-gray-900">Edit Profile</button>
+            <button class="w-full text-left py-2 text-sm text-gray-700 hover:text-gray-900">Change Password</button>
+            <button class="w-full text-left py-2 text-sm text-gray-700 hover:text-gray-900">Subscription Plan</button>
+            <button class="w-full text-left py-2 text-sm text-red-500 hover:text-red-600">Sign Out</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== BOTTOM NAV ==================== -->
+      <div class="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-100 flex items-center justify-around z-50">
+        <button onclick="showScreen('home')" class="nav-item active flex flex-col items-center gap-0.5 p-2 text-gray-400" id="nav-home">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span class="text-[9px]">Home</span>
+        </button>
+        <button onclick="showScreen('alerts')" class="nav-item flex flex-col items-center gap-0.5 p-2 text-gray-400" id="nav-alerts">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span class="text-[9px]">Alerts</span>
+        </button>
+        <button onclick="showScreen('voice')" class="nav-item flex flex-col items-center gap-0.5 p-2 text-gray-400" id="nav-voice">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+          <span class="text-[9px]">Voice</span>
+        </button>
+        <button onclick="showScreen('care')" class="nav-item flex flex-col items-center gap-0.5 p-2 text-gray-400" id="nav-care">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <span class="text-[9px]">Care</span>
+        </button>
+        <button onclick="showScreen('settings')" class="nav-item flex flex-col items-center gap-0.5 p-2 text-gray-400" id="nav-settings">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span class="text-[9px]">Settings</span>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function showScreen(name) {
+        document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.classList.add('hidden'); });
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('screen-' + name).classList.remove('hidden');
+        document.getElementById('screen-' + name).classList.add('active');
+        document.getElementById('nav-' + name).classList.add('active');
+      }
+
+      // Live clock
+      function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:false});
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // Fluctuating vitals
+      function fluctuate() {
+        const hr = 68 + Math.floor(Math.random() * 10);
+        const temp = (36.2 + Math.random() * 0.6).toFixed(1);
+        const steps = 2847 + Math.floor(Math.random() * 30 - 15);
+        const stresses = ['Low','Low','Low','Moderate','Low'];
+        const stress = stresses[Math.floor(Math.random() * stresses.length)];
+        document.getElementById('live-hr').textContent = hr;
+        document.getElementById('live-temp').textContent = temp;
+        document.getElementById('live-steps').textContent = steps.toLocaleString();
+        document.getElementById('live-stress').textContent = stress;
+
+        // Battery fluctuation
+        const bat = 68 + Math.floor(Math.random() * 8);
+        document.getElementById('sock-battery').style.width = bat + '%';
+        document.getElementById('battery-text').textContent = bat + '%';
+      }
+      setInterval(fluctuate, 4000);
+    </script>
+  </div>
+</body>
+</html>
